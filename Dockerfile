@@ -8,9 +8,9 @@ ENV PYTHONUNBUFFERED 1
 # Set the working directory for the entire build process
 WORKDIR /app
 
-# Copy the pyproject.toml and poetry.lock files (if using Poetry)
-COPY pyproject.toml ./
-COPY poetry.lock ./
+# Copy the pyproject.toml and poetry.lock files
+COPY server/pyproject.toml ./
+COPY server/uv.lock ./
 
 # Install dependencies
 RUN pip install --no-cache-dir poetry && poetry install --no-root --no-dev
