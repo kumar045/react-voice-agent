@@ -12,28 +12,53 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #e0e0e0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            border: 1px solid #ccc;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
         }
         #toggleAudio {
-            font-size: 18px;
-            padding: 10px 20px;
+            font-size: 20px;
+            padding: 15px 30px;
             cursor: pointer;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             transition: background-color 0.3s;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         #toggleAudio:hover {
             background-color: #45a049;
         }
+        .icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
     </style>
 </head>
 <body>
-    <button id="toggleAudio">Start Audio</button>
+    <div class="container">
+        <div class="icon">📞</div>
+        <h1>Dial</h1>
+        <button id="toggleAudio">Start Audio</button>
+    </div>
 
     <script>
-        // Create audio context
+        // Your existing JavaScript code here...
         const BUFFER_SIZE = 4800;
         class Player {
             constructor() {
@@ -71,17 +96,13 @@
             }
 
             async start(stream) {
-                console.log('starting')
                 try {
                     if (this.audioContext) {
                         await this.audioContext.close();
                     }
 
                     this.audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-                    console.log('1')
-
                     await this.audioContext.audioWorklet.addModule("/audio-processor-worklet.js");
-                    console.log('2')
 
                     this.mediaStream = stream;
                     this.mediaStreamSource = this.audioContext.createMediaStreamSource(this.mediaStream);
@@ -93,9 +114,7 @@
 
                     this.mediaStreamSource.connect(this.workletNode);
                     this.workletNode.connect(this.audioContext.destination);
-                    console.log('done')
                 } catch (error) {
-                    console.log('error', error)
                     this.stop();
                 }
             }
@@ -116,21 +135,13 @@
             }
         }
 
-
-
-
-        // Function to get microphone input and send it to WebSocket
         async function startAudio() {
             try {
-
-                // handle output -> speaker stuff
-                const ws = new WebSocket("wss://voice-agent-t7zv.onrender.com/wss");
-
+                const ws = new WebSocket("wss://https://voice-agent-t7zv.onrender.com/wss");
                 const audioPlayer = new Player();
-                audioPlayer.init(24000);
+                await audioPlayer.init(24000);
 
                 ws.onmessage = event => {
-
                     const data = JSON.parse(event.data);
                     if (data?.type !== 'response.audio.delta') return;
 
@@ -165,12 +176,10 @@
                     }
                 };
 
-                // handle microphone -> input websocket
                 const audioRecorder = new Recorder(handleAudioData);
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
                 await audioRecorder.start(stream);
-                
 
             } catch (error) {
                 console.error('Error accessing the microphone', error);
@@ -178,7 +187,6 @@
             }
         }
 
-        // Button to toggle audio
         const toggleButton = document.getElementById('toggleAudio');
         let isAudioOn = false;
 
@@ -188,12 +196,10 @@
                 toggleButton.textContent = 'Stop Audio';
                 isAudioOn = true;
             } else {
-                // audioContext.suspend();
                 toggleButton.textContent = 'Start Audio';
                 isAudioOn = false;
             }
         });
-
     </script>
 </body>
 </html>
