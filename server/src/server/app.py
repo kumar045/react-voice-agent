@@ -1,13 +1,11 @@
 import uvicorn
+import os
 from starlette.applications import Starlette
 from starlette.responses import HTMLResponse
 from starlette.routing import Route, WebSocketRoute
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket
-
 from langchain_openai_voice import OpenAIVoiceReactAgent
-
-
 from server.utils import websocket_stream
 from server.prompt import INSTRUCTIONS
 from server.tools import TOOLS
@@ -19,6 +17,7 @@ async def websocket_endpoint(websocket: WebSocket):
     browser_receive_stream = websocket_stream(websocket)
 
     agent = OpenAIVoiceReactAgent(
+        api_key = os.getenv("OPENAI_API_KEY"),
         model="gpt-4o-realtime-preview",
         tools=TOOLS,
         instructions=INSTRUCTIONS,
