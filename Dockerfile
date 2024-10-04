@@ -12,9 +12,6 @@ WORKDIR /app
 COPY server/pyproject.toml ./
 COPY server/uv.lock ./
 
-# Install dependencies
-RUN pip install --no-cache-dir poetry && poetry install --no-root --no-dev
-
 # Install `uv` for running the server
 RUN pip install uv
 
