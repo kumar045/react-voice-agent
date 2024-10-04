@@ -35,7 +35,7 @@ async def homepage(request):
 # catchall route to load files from src/server/static
 
 
-routes = [Route("/", homepage), WebSocketRoute("/ws", websocket_endpoint)]
+routes = [Route("/", homepage), WebSocketRoute("/wss", websocket_endpoint)]
 
 app = Starlette(debug=True, routes=routes)
 
