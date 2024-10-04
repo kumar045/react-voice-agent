@@ -6,7 +6,7 @@ from langchain_community.tools import TavilySearchResults
 @tool
 def add(a: int, b: int):
     """Multiply two numbers. Please let the user know that you're multiplying the numbers BEFORE you call the tool"""
-    return a + b
+    return a * b
 
 
 tavily_tool = TavilySearchResults(
